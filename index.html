@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7f8fa">
+  <title>Interval — a little practice, a better ear.</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="i18n.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main>
+    <div class="workspace">
+      <aside class="panel settings-panel" aria-label="Your practice" data-i18n-aria="practice">
+        <div class="section-label"><span data-i18n="intervals">INTERVALS</span> <button id="select-all" class="text-button">Select all</button></div>
+        <div id="interval-options" class="interval-options"></div>
+        <div class="settings-divider"></div>
+        <div class="section-label" data-i18n="advanceLabel">NEXT QUESTION</div>
+        <div class="segmented" id="advance-mode" role="group" aria-label="Next question mode" data-i18n-aria="advanceGroup">
+          <button data-advance="manual" aria-pressed="true" data-i18n="advanceManual">Manual</button>
+          <button data-advance="countdown" aria-pressed="false" data-i18n="advanceCountdown">Countdown</button>
+        </div>
+        <div class="countdown-options" id="countdown-options" hidden>
+          <label for="countdown-seconds" data-i18n="countdownDelay">Delay after answering</label>
+          <select id="countdown-seconds"><option value="3">3 seconds</option><option value="5" selected>5 seconds</option><option value="10">10 seconds</option></select>
+        </div>
+        <div class="settings-divider"></div>
+        <div class="section-label" id="bass-settings-label" data-i18n="yourBass">YOUR BASS</div>
+        <div class="segmented" id="string-count" role="group" aria-label="Number of bass strings" data-i18n-aria="stringGroup"><button data-strings="4">4 strings</button><button data-strings="5">5 strings</button><button data-strings="6">6 strings</button></div>
+        <div class="settings-divider"></div>
+        <div class="section-label language-label" data-i18n="language">Language</div>
+        <div class="language-switch" role="group" aria-label="Language" data-i18n-aria="language">
+          <button type="button" data-language="en" lang="en" aria-label="English" title="English" aria-pressed="true"><span aria-hidden="true">🇬🇧</span></button>
+          <button type="button" data-language="pt-BR" lang="pt-BR" aria-label="Português brasileiro" title="Português brasileiro" aria-pressed="false"><span aria-hidden="true">🇧🇷</span></button>
+        </div>
+      </aside>
+      <div class="practice-panels">
+      <section class="panel quiz-panel" aria-labelledby="quiz-heading">
+        <div class="quiz-top"><span class="eyebrow" id="quiz-heading" data-i18n="findNote">FIND THE NOTE</span><span class="question-number" id="question-number">QUESTION 01</span></div>
+        <div class="question-equation"><div class="root-tile"><small data-i18n="rootLabel">ROOT NOTE</small><strong id="root-note">C</strong></div><span class="equation-plus">+</span><div class="interval-tile"><small data-i18n="intervalLabel">INTERVAL</small><strong id="interval-short">M3</strong></div><span class="equation-arrow">→</span><div class="answer-tile"><small data-i18n="targetLabel">TARGET NOTE</small><strong id="target-note">?</strong></div></div>
+        <div class="answer-heading"><span data-i18n="chooseAnswer">Choose your answer</span><span class="keyboard-hint" data-i18n="keyboard">or use keys 1–9, 0, −, =</span></div>
+        <div class="answer-grid" id="answer-grid"></div>
+        <div class="quiz-bottom" id="quiz-bottom"><div class="feedback" id="feedback" role="status" aria-live="polite"><span class="feedback-icon">✧</span><span>No rush. Think it through.</span></div><button id="next-question" class="next-button" disabled><span data-i18n="next">Next question</span> <span>→</span></button><div id="next-countdown" class="next-countdown" role="timer" aria-live="off" hidden><span aria-hidden="true">◷</span><span id="countdown-label"></span></div></div>
+      </section>
+      <section class="panel circle-panel" aria-labelledby="circle-heading"><h2 class="section-label" id="circle-heading" data-i18n="circle">Circle of fifths</h2><div id="circle" class="circle-container"></div><div class="legend"><span><i class="root-dot"></i> <span data-i18n="rootNote">Root note</span></span><span><i class="target-dot"></i> <span data-i18n="intervalNote">Interval note</span></span></div></section>
+      <section class="panel fretboard-panel" aria-labelledby="fretboard-heading"><div class="fretboard-header"><div><div class="panel-heading"><h2 class="section-label" id="fretboard-heading" data-i18n="fretboard">FRETBOARD</h2></div></div><div class="legend"><span><i class="root-dot"></i> <span data-i18n="root">Root</span></span><span><i class="target-dot"></i> <span data-i18n="interval">Interval</span></span></div></div><div class="fretboard-scroll"><div id="fretboard"></div></div></section>
+      <section class="panel stats-panel" aria-label="Your progress" data-i18n-aria="progress">
+        <div class="stats-summary">
+          <div class="stats-row">
+            <div><strong id="accuracy">—</strong><span data-i18n="accuracy">ACCURACY</span></div>
+            <div><strong id="correct-count">0<span> / 0</span></strong><span data-i18n="correctLabel">CORRECT</span></div>
+            <div><strong id="streak">0<span class="streak-flame">♨</span></strong><span data-i18n="streak">CURRENT STREAK</span></div>
+            <div><strong id="answer-time">—</strong><span data-i18n="answerTime">AVG. ANSWER TIME</span></div>
+          </div>
+          <button class="text-button reset-button" id="reset-stats">↺ <span data-i18n="reset">Reset</span></button>
+        </div>
+        <button id="details-toggle" class="text-button details-toggle" aria-expanded="false" aria-controls="stats-details">Interval breakdown <span>⌄</span></button>
+        <div id="stats-details" hidden></div>
+      </section>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
