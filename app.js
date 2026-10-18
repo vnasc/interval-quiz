@@ -47,6 +47,7 @@ try {
 } catch { /* Private browsing or unavailable storage: practice still works. */ }
 let question;
 let questionNumber = 0;
+let intervalDeck = [];
 let countdownHandle = null;
 let countdownDeadline = null;
 function save() {
@@ -136,10 +137,25 @@ function startCountdown() {
   tick();
 }
 
+function drawIntervalId() {
+  if (!intervalDeck.length) {
+    intervalDeck = [...state.selected];
+    for (let i = intervalDeck.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [intervalDeck[i], intervalDeck[j]] = [intervalDeck[j], intervalDeck[i]];
+    }
+    // Avoid a repeat right at the boundary between shuffled rounds.
+    if (intervalDeck.length > 1 && question?.interval.id === intervalDeck[intervalDeck.length - 1]) {
+      [intervalDeck[0], intervalDeck[intervalDeck.length - 1]] = [intervalDeck[intervalDeck.length - 1], intervalDeck[0]];
+    }
+  }
+  return intervalDeck.pop();
+}
+
 function newQuestion(first = false) {
   stopCountdown();
   const previous = question;
-  const intervalId = state.selected[Math.floor(Math.random() * state.selected.length)];
+  const intervalId = drawIntervalId();
   const interval = INTERVALS.find(i => i.id === intervalId);
   let root = ROOTS[Math.floor(Math.random() * ROOTS.length)];
   if (first) root = ROOTS[0];
@@ -287,12 +303,14 @@ $('interval-options').addEventListener('change', event => {
     return;
   }
   state.selected = event.target.checked ? [...state.selected, id] : state.selected.filter(v => v !== id);
+  intervalDeck = [];
   save();
   renderSettings();
   if (!question.answered && !state.selected.includes(question.interval.id)) newQuestion();
 });
 function setIntervals(ids) {
   state.selected = [...ids];
+  intervalDeck = [];
   save();
   renderSettings();
   if (!question.answered && !state.selected.includes(question.interval.id)) newQuestion();
@@ -375,4 +393,3 @@ if (typeof ResizeObserver !== 'undefined') {
   panelHeightObserver.observe(quizPanel, { box: 'border-box' });
   matchPanelHeight();
 }
-

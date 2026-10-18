@@ -44,7 +44,8 @@ function loadApp(saved = null) {
   }
   vm.runInContext(`globalThis.api = {
     answerNames, spelledTarget, ROOTS, INTERVALS, answer, newQuestion,
-    renderQuestion, renderCircle, renderAdvance, startCountdown, stopCountdown,
+    renderQuestion, renderCircle, renderAdvance, startCountdown, stopCountdown, drawIntervalId,
+    resetIntervalDeck() { intervalDeck = []; },
     setQuestion(value) { question = value; },
     get state() { return state; }, get question() { return question; },
     get questionNumber() { return questionNumber; },
