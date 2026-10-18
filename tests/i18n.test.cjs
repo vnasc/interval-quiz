@@ -7,7 +7,7 @@ const vm = require('node:vm');
 function loadTranslations(language = 'en') {
   const context = vm.createContext({ state: { language } });
   const source = readFileSync(join(__dirname, '../i18n.js'), 'utf8');
-  vm.runInContext(`${source}\nglobalThis.api = { TRANSLATIONS, t, intervalName };`, context);
+  vm.runInContext(`${source}\nglobalThis.api = { TRANSLATIONS, ...createI18n(() => state.language) };`, context);
   return { context, ...context.api };
 }
 

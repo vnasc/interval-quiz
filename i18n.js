@@ -213,35 +213,42 @@ const TRANSLATIONS = {
   },
 };
 
-function t(key, values = {}) {
-  let text = TRANSLATIONS[state.language][key];
-  // Portuguese has a different plural stem for semitom/semitons.
-  if (key === "semitonesUp" && state.language === "pt-BR" && values.count !== 1)
-    text = "{count} semitons acima";
-  return text.replace(/\{(\w+)\}/g, (_, name) => values[name] ?? "");
-}
+function createI18n(getLanguage, $) {
+  function t(key, values = {}) {
+    let text = TRANSLATIONS[getLanguage()][key];
 
-function intervalName(interval) {
-  return TRANSLATIONS[state.language].intervalNames[interval.id];
-}
+    // Portuguese has a different plural stem for semitom/semitons.
+    if (key === "semitonesUp" && getLanguage() === "pt-BR" && values.count !== 1)
+      text = "{count} semitons acima";
 
-function renderLanguage() {
-  document.documentElement.lang = state.language;
-  document.title = t("title");
-  document.querySelectorAll("[data-i18n]").forEach((element) => {
-    element.textContent = t(element.dataset.i18n);
-  });
+    return text.replace(/\{(\w+)\}/g, (_, name) => values[name] ?? "");
+  }
 
-  document.querySelectorAll("[data-i18n-aria]").forEach((element) => {
-    element.setAttribute("aria-label", t(element.dataset.i18nAria));
-  });
+  function intervalName(interval) {
+    return TRANSLATIONS[getLanguage()].intervalNames[interval.id];
+  }
 
-  document.querySelectorAll("[data-language]").forEach((button) => {
-    const active = button.dataset.language === state.language;
-    button.classList.toggle("active", active);
-    button.setAttribute("aria-pressed", String(active));
-  });
+  function renderLanguage() {
+    document.documentElement.lang = getLanguage();
+    document.title = t("title");
 
-  $("details-toggle").innerHTML =
-    `${t("breakdown")} <span>${$("stats-details").hidden ? "⌄" : "⌃"}</span>`;
+    document.querySelectorAll("[data-i18n]").forEach((element) => {
+      element.textContent = t(element.dataset.i18n);
+    });
+
+    document.querySelectorAll("[data-i18n-aria]").forEach((element) => {
+      element.setAttribute("aria-label", t(element.dataset.i18nAria));
+    });
+
+    document.querySelectorAll("[data-language]").forEach((button) => {
+      const active = button.dataset.language === getLanguage();
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+
+    $("details-toggle").innerHTML =
+      `${t("breakdown")} <span>${$("stats-details").hidden ? "⌄" : "⌃"}</span>`;
+  }
+
+  return { t, intervalName, renderLanguage };
 }

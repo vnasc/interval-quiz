@@ -39,10 +39,8 @@ function loadApp(saved = null) {
     window: { confirm: () => true },
     localStorage: { getItem: () => saved === null ? null : JSON.stringify(saved), setItem() {} }
   });
-  for (const file of ['i18n.js', 'app.js']) {
-    vm.runInContext(readFileSync(join(__dirname, '../..', file), 'utf8'), context);
-  }
-  vm.runInContext(`globalThis.api = {
+
+  const testApi = `globalThis.api = {
     answerNames, spelledTarget, ROOTS, INTERVALS, answer, newQuestion,
     renderQuestion, renderCircle, renderAdvance, startCountdown, stopCountdown, drawIntervalId,
     resetIntervalDeck() { intervalDeck = []; },
@@ -50,9 +48,19 @@ function loadApp(saved = null) {
     get state() { return state; }, get question() { return question; },
     get questionNumber() { return questionNumber; },
     get countdownDeadline() { return countdownDeadline; }
-  };`, context);
+  };`;
+
+  for (const file of ['i18n.js', 'app.js']) {
+    let source = readFileSync(join(__dirname, '../..', file), 'utf8');
+
+    // Expose private internals only in the test VM, inside the app's IIFE.
+    if (file === 'app.js') source = source.replace(/\}\)\(\);\s*$/, `${testApi}\n})();`);
+    vm.runInContext(source, context);
+  }
+
   function advance(milliseconds) {
     const end = now + milliseconds;
+
     while (timers.size) {
       const [id, timer] = [...timers.entries()].sort((a, b) => a[1].time - b[1].time)[0];
       if (timer.time > end) break;
@@ -60,8 +68,11 @@ function loadApp(saved = null) {
       now = timer.time;
       timer.callback();
     }
+
     now = end;
   }
+
   return { context, api: context.api, elements, element, listeners, timers, advance };
 }
+
 module.exports = { loadApp };
