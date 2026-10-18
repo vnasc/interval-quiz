@@ -22,7 +22,9 @@
   const STORAGE_KEY = 'interval-practice-v1';
   const $ = id => document.getElementById(id);
   const emptyStats = () => ({ total: 0, correct: 0, streak: 0, best: 0, totalAnswerMs: 0, timedAnswers: 0, intervals: {} });
-  let state = { selected: [...CHORD_TONES], strings: 4, language: 'en', autoNext: false, countdownSeconds: 5, stats: emptyStats() };
+  const browserLocale = globalThis.navigator?.languages?.[0] || globalThis.navigator?.language || '';
+  const defaultLanguage = /^pt-BR(?:-|$)/i.test(browserLocale) ? 'pt-BR' : 'en';
+  let state = { selected: [...CHORD_TONES], strings: 4, language: defaultLanguage, autoNext: false, countdownSeconds: 5, stats: emptyStats() };
   const { t, intervalName, renderLanguage } = createI18n(() => state.language, $);
 
   try {

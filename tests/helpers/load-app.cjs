@@ -4,7 +4,7 @@ const vm = require('node:vm');
 
 // Load the real app with a minimal DOM and deterministic timers, without a
 // browser dependency. Integration checks still run in a real browser.
-function loadApp(saved = null) {
+function loadApp(saved = null, navigator = undefined) {
   const elements = new Map();
   const listeners = new Map();
   const timers = new Map();
@@ -25,6 +25,7 @@ function loadApp(saved = null) {
   class FakeDate extends Date { static now() { return now; } }
   const context = vm.createContext({
     Date: FakeDate,
+    navigator,
     performance: { now: () => now },
     setTimeout(callback, delay) {
       const id = ++timerId;
