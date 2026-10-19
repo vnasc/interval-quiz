@@ -243,12 +243,6 @@ h2 {
   justify-content: space-between;
 }
 
-.question-number {
-  font-size: 9px;
-  color: #a0a7aa;
-  letter-spacing: 1.2px;
-}
-
 .question-equation {
   display: flex;
   justify-content: center;
@@ -485,35 +479,6 @@ h2 {
 
 .circle-note.target {
   fill: #b0783f;
-}
-
-.legend {
-  display: flex;
-  justify-content: center;
-  gap: 19px;
-  font-size: 9px;
-  color: #8b9693;
-}
-
-.legend > span {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.legend i {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-}
-
-.root-dot {
-  background: var(--green);
-}
-
-.target-dot {
-  background: var(--orange);
 }
 
 .fretboard-panel {
@@ -778,10 +743,6 @@ h2 {
     display: block;
   }
 
-  .fretboard-header > .legend {
-    justify-content: flex-start;
-    margin-bottom: 15px;
-  }
 }
 
 @media (max-width: 620px) {
@@ -883,10 +844,6 @@ h2 {
     grid-template-columns: 1fr;
   }
 
-  .question-number {
-    font-size: 8px;
-  }
-
 } /* Language controls retain native language names for accessible discovery. */
 .language-label {
   text-transform: uppercase;
@@ -929,11 +886,6 @@ h2 {
 
 .next-button > span:first-child {
   margin-left: 0;
-}
-
-html[lang="pt-BR"] .circle-panel > .legend {
-  gap: 12px;
-  font-size: 8px;
 }
 
 html[lang="pt-BR"] .fretboard-header .panel-heading {

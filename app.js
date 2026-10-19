@@ -193,7 +193,6 @@
   }
 
   function renderQuestion() {
-    $('question-number').textContent = t('question', { number: String(questionNumber).padStart(2, '0') });
     $('root-note').textContent = question.root.name;
     $('interval-short').textContent = question.interval.id === 'TT' ? 'A4 / d5' : question.interval.id;
     $('interval-short').style.fontSize = question.interval.id === 'TT' ? '19px' : '';
@@ -201,7 +200,7 @@
     document.querySelector('.answer-tile').classList.remove('revealed');
     $('answer-grid').innerHTML = answerNames(question.root).map((name, pc) => `<button class="note-button ${name.length > 2 ? 'accidental' : ''}" data-pitch="${pc}" aria-label="${name}">${name}</button>`).join('');
     $('feedback').className = 'feedback';
-    $('feedback').innerHTML = `<span class="feedback-icon">✧</span><span>${t('waiting')}</span>`;
+    $('feedback').innerHTML = '';
     $('next-question').disabled = true;
     if (question.answered) renderAnsweredQuestion();
     if (question.notice) $('feedback').innerHTML = `<span class="feedback-icon">ⓘ</span><span>${t(question.notice)}</span>`;

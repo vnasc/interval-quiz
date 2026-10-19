@@ -42,11 +42,9 @@ test('all eleven interval names are available in both languages', () => {
 
 test('dynamic messages interpolate and pluralize in both languages', () => {
   const { context, t } = loadTranslations();
-  assert.equal(t('question', { number: '07' }), 'QUESTION 07');
   assert.equal(t('semitonesUp', { count: 1, plural: '' }), '1 semitone up');
   assert.equal(t('semitonesUp', { count: 7, plural: 's' }), '7 semitones up');
   context.state.language = 'pt-BR';
-  assert.equal(t('question', { number: '07' }), 'QUESTÃO 07');
   assert.equal(t('semitonesUp', { count: 1 }), '1 semitom acima');
   assert.equal(t('semitonesUp', { count: 7 }), '7 semitons acima');
   assert.equal(t('correct', { root: 'C', target: 'E' }), 'Muito bem! C → E.');
