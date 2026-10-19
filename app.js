@@ -414,9 +414,24 @@
   });
 
   document.addEventListener('keydown', event => {
-    if (event.ctrlKey || event.metaKey || event.altKey || event.repeat || ['INPUT', 'SELECT', 'TEXTAREA'].includes(event.target.tagName)) return;
-    const index = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '='].indexOf(event.key);
-    if (index >= 0 && !question.answered) { event.preventDefault(); answer(index); }
+    if (event.ctrlKey || event.metaKey || event.altKey || event.repeat || event.isComposing || event.target.isContentEditable || ['INPUT', 'SELECT', 'TEXTAREA'].includes(event.target.tagName)) return;
+    const letter = event.key.toUpperCase();
+    const candidates = /^[A-G]$/.test(letter)
+      ? answerNames(question.root)
+        .map((name, pitch) => ({ name, pitch }))
+        .filter(option => option.name[0] === letter)
+        .sort((a, b) => a.name.length - b.name.length)
+      : [];
+    // When a letter has two altered options (e.g. E♭ and E♭♭), use
+    // the plain key for the simpler spelling and Shift for the other.
+    const option = event.shiftKey
+      ? candidates.filter(option => option.name.length > 1).at(-1)
+      : candidates.find(option => option.name.length === 1) || (candidates.length > 1 ? candidates[0] : undefined);
+    const pitch = option?.pitch ?? -1;
+    if (pitch >= 0 && !question.answered) {
+      event.preventDefault();
+      answer(pitch);
+    }
     else if (event.key === 'Enter' && question.answered && !state.autoNext && event.target === document.body) { event.preventDefault(); newQuestion(); }
   });
 
