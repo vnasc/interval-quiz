@@ -299,6 +299,8 @@
     const targets = notes.filter(n => n.pc === question.target);
     let svg = `<svg class="fretboard-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="${t('fretboardAria', { count: state.strings, root: question.root.name })}${question.answered ? t('fretboardTargetAria', { target: question.targetName, interval: intervalName(question.interval) }) : '.'}"><rect x="${left}" y="${top - 16}" width="720" height="${bottom - top + 32}" rx="4" fill="#faf9f6"/>`;
 
+    // Soften the fretboard guides without dimming the highlighted notes.
+    svg += '<g opacity="0.8">';
     [3, 5, 7, 9, 12].forEach(fret => {
       svg += `<circle cx="${x(fret)}" cy="${(top + bottom) / 2 - (fret === 12 ? 7 : 0)}" r="3.5" fill="#929b94"/>`;
       if (fret === 12) svg += `<circle cx="${x(fret)}" cy="${(top + bottom) / 2 + 7}" r="3.5" fill="#929b94"/>`;
@@ -314,6 +316,8 @@
     tuning.forEach((midi, s) => {
       svg += `<text x="9" y="${top + s * row + 3.5}" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">${SHORT_NAMES[midi % 12]}</text><line x1="23" x2="781" y1="${top + s * row}" y2="${top + s * row}" stroke="#707e74" stroke-width="${1.25 + s * .25}"/>`;
     });
+
+    svg += '</g>';
 
     notes.forEach(n => {
       const isRoot = n.pc === question.root.pc;
