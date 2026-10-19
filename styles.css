@@ -166,8 +166,8 @@ h2 {
   border: 1px solid transparent;
   border-radius: 7px;
   cursor: pointer;
-  font-size: 11px;
-  min-height: 28px;
+  font-size: 12px;
+  min-height: 30px;
 }
 
 .interval-option.selected {
@@ -210,12 +210,12 @@ h2 {
 
 .interval-option .interval-abbr {
   margin-left: auto;
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
 }
 
 .interval-option .long-label {
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .segmented {
