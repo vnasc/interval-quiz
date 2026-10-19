@@ -285,9 +285,9 @@
 
     const root = positions.find(p => p.pc === question.root.pc);
     const target = positions.find(p => p.pc === question.target);
-    const connection = question.answered ? `<path d="M ${root.x} ${root.y} Q 140 140 ${target.x} ${target.y}" fill="none" stroke="var(--${question.answerPc === question.target ? 'green' : 'red'})" stroke-width="1.7" stroke-dasharray="4 4"/>` : '';
+    const connection = question.answered ? `<path d="M ${root.x} ${root.y} Q 140 140 ${target.x} ${target.y}" fill="none" stroke="var(--green)" stroke-width="1.7" stroke-dasharray="4 4"/>` : '';
 
-    $('circle').innerHTML = `<svg class="${question.answerPc === question.target ? 'correct' : 'incorrect'}" viewBox="0 0 280 280" role="img" aria-label="${t('circleAria', { root: question.root.name })}${question.answered ? t('circleTargetAria', { target: question.targetName }) : ''}"><circle cx="140" cy="140" r="108" fill="none" stroke="#edf0ee"/><circle cx="140" cy="140" r="79" fill="none" stroke="#f0f3f1" stroke-dasharray="2 5"/>${connection}${positions.map(p => {
+    $('circle').innerHTML = `<svg class="correct" viewBox="0 0 280 280" role="img" aria-label="${t('circleAria', { root: question.root.name })}${question.answered ? t('circleTargetAria', { target: question.targetName }) : ''}"><circle cx="140" cy="140" r="108" fill="none" stroke="#edf0ee"/><circle cx="140" cy="140" r="79" fill="none" stroke="#f0f3f1" stroke-dasharray="2 5"/>${connection}${positions.map(p => {
       const type = p.pc === question.root.pc ? 'root' : question.answered && p.pc === question.target ? 'target' : '';
       const name = type === 'root' ? question.root.name : type === 'target' ? question.targetName : answerNames(question.root)[p.pc];
       return `<circle class="circle-node ${type}" cx="${p.x}" cy="${p.y}" r="18"/><text class="circle-note ${type}" x="${p.x}" y="${p.y + 4.5}" text-anchor="middle">${name}</text>`;
@@ -332,7 +332,7 @@
       const isTarget = question.answered && n.pc === question.target;
       if (!isRoot && !isTarget) return;
       const label = isRoot ? question.root.name : question.targetName;
-      svg += `<circle cx="${n.x}" cy="${n.y}" r="11" fill="var(--${isRoot ? 'root' : question.answerPc === question.target ? 'green' : 'red'})" stroke="white" stroke-width="2"/><text x="${n.x}" y="${n.y + 3.2}" text-anchor="middle" fill="white" font-size="${label.length > 2 ? 7 : 9}" font-weight="600">${label}</text>`;
+      svg += `<circle cx="${n.x}" cy="${n.y}" r="11" fill="var(--${isRoot ? 'root' : 'green'})" stroke="white" stroke-width="2"/><text x="${n.x}" y="${n.y + 3.2}" text-anchor="middle" fill="white" font-size="${label.length > 2 ? 7 : 9}" font-weight="600">${label}</text>`;
     });
 
     $('fretboard').innerHTML = svg + '</svg>';
