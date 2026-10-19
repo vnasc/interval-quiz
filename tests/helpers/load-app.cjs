@@ -37,7 +37,10 @@ function loadApp(saved = null, navigator = undefined) {
       documentElement: {}, getElementById: element, querySelector: element,
       querySelectorAll: () => [], addEventListener(type, callback) { listeners.set(type, callback); }
     },
-    window: { confirm: () => true },
+    window: {
+      confirm: () => true,
+      addEventListener(type, callback) { listeners.set(`window:${type}`, callback); }
+    },
     localStorage: { getItem: () => saved === null ? null : JSON.stringify(saved), setItem() {} }
   });
 

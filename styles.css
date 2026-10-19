@@ -346,6 +346,10 @@ h2 {
   transform: translateY(-1px);
 }
 
+.answer-grid.shift-held .note-button:not(.shift-highlight):not(:disabled) {
+  opacity: 0.4;
+}
+
 .note-button.accidental {
   font-size: 10px;
   letter-spacing: -0.3px;

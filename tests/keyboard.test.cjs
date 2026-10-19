@@ -89,3 +89,54 @@ test('note shortcuts only record one answer per question', () => {
   assert.equal(app.api.question.answerPc, 0);
   assert.equal(app.api.state.stats.total, 1);
 });
+
+function trackHighlights(app) {
+  const highlighted = new Set();
+  const buttons = Array.from({ length: 12 }, (_, pitch) => ({
+    dataset: { pitch: String(pitch) },
+    classList: {
+      add() {},
+      toggle(name, active) {
+        if (name !== 'shift-highlight') return;
+        if (active) highlighted.add(pitch);
+        else highlighted.delete(pitch);
+      }
+    }
+  }));
+  app.context.document.querySelectorAll = selector => selector === '.note-button' ? buttons : [];
+  return highlighted;
+}
+
+test('holding Shift highlights exactly its keyboard options for every root', () => {
+  const app = loadApp();
+  const highlighted = trackHighlights(app);
+  for (const root of app.api.ROOTS) {
+    app.api.setQuestion({ ...app.api.question, root, answered: false });
+    press(app, 'Shift', { shiftKey: true });
+    const names = app.api.answerNames(root);
+    const expected = [...'ABCDEFG'].map(letter => names
+      .map((name, pitch) => ({ name, pitch }))
+      .filter(option => option.name[0] === letter && option.name.length > 1)
+      .sort((a, b) => a.name.length - b.name.length).at(-1)?.pitch)
+      .filter(pitch => pitch !== undefined);
+    assert.deepEqual([...highlighted].sort(), expected.sort());
+    assert.equal(app.api.question.answered, false);
+    app.listeners.get('keyup')({ key: 'Shift' });
+    assert.equal(highlighted.size, 0);
+  }
+});
+
+test('Shift highlights survive re-rendering and clear on blur or answering', () => {
+  const app = loadApp();
+  const highlighted = trackHighlights(app);
+  press(app, 'Shift', { shiftKey: true });
+  app.api.renderQuestion();
+  assert.equal(highlighted.size, 5);
+  app.listeners.get('window:blur')();
+  assert.equal(highlighted.size, 0);
+  press(app, 'Shift', { shiftKey: true });
+  press(app, 'D', { shiftKey: true });
+  assert.equal(highlighted.size, 0);
+  press(app, 'Shift', { shiftKey: true });
+  assert.equal(highlighted.size, 0);
+});
