@@ -7,8 +7,12 @@
   --line: #e8ecee;
   --green: #287d68;
   --green-light: #eaf5ef;
-  --orange: #d59353;
-  --orange-light: #fbf1e5;
+  --root: #4b555c;
+  --root-light: #f0f2f3;
+  --root-border: #cbd1d5;
+  --red: #b04438;
+  --red-light: #fbece9;
+  --red-border: #e1a49a;
   --font: "DM Sans", sans-serif;
 }
 
@@ -275,16 +279,11 @@ h2 {
   line-height: 1.2;
 }
 
-.root-tile {
-  background: var(--green-light);
-  border: 1px solid #d5e9df;
-  color: var(--green);
-}
-
+.root-tile,
 .interval-tile {
-  background: #f4f5f6;
-  border: 1px solid #e9edef;
-  color: #647076;
+  background: var(--root-light);
+  border: 1px solid var(--root-border);
+  color: var(--root);
 }
 
 .answer-tile {
@@ -294,10 +293,16 @@ h2 {
   background: #fcfdfd;
 }
 
-.answer-tile.revealed {
-  border: 1px solid #efd8bd;
-  background: var(--orange-light);
-  color: #b0783f;
+.answer-tile.revealed.correct {
+  border: 1px solid #75ae96;
+  background: var(--green-light);
+  color: var(--green);
+}
+
+.answer-tile.revealed.incorrect {
+  border: 1px solid var(--red-border);
+  background: var(--red-light);
+  color: var(--red);
 }
 
 .equation-plus,
@@ -362,9 +367,9 @@ h2 {
 }
 
 .note-button.incorrect {
-  background: #fbece9;
-  border-color: #e1a49a;
-  color: #b75d50;
+  background: var(--red-light);
+  border-color: var(--red-border);
+  color: var(--red);
 }
 
 .note-button:disabled:not(.correct):not(.incorrect) {
@@ -444,14 +449,22 @@ h2 {
 }
 
 .circle-node.root {
-  fill: var(--green);
-  stroke: var(--green);
+  fill: var(--root);
+  stroke: var(--root);
 }
 
 .circle-node.target {
-  fill: var(--orange-light);
-  stroke: var(--orange);
   stroke-width: 1.5;
+}
+
+.correct .circle-node.target {
+  fill: var(--green-light);
+  stroke: var(--green);
+}
+
+.incorrect .circle-node.target {
+  fill: var(--red-light);
+  stroke: var(--red);
 }
 
 .circle-note {
@@ -466,8 +479,12 @@ h2 {
   fill: white;
 }
 
-.circle-note.target {
-  fill: #b0783f;
+.correct .circle-note.target {
+  fill: var(--green);
+}
+
+.incorrect .circle-note.target {
+  fill: var(--red);
 }
 
 .fretboard-panel {

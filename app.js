@@ -224,7 +224,7 @@
     $('interval-short').textContent = question.interval.id === 'TT' ? 'A4 / d5' : question.interval.id;
     $('interval-short').style.fontSize = question.interval.id === 'TT' ? '19px' : '';
     $('target-note').textContent = '?';
-    document.querySelector('.answer-tile').classList.remove('revealed');
+    document.querySelector('.answer-tile').classList.remove('revealed', 'correct', 'incorrect');
     $('answer-grid').innerHTML = answerNames(question.root).map((name, pc) => `<button class="note-button ${name.length > 2 ? 'accidental' : ''}" data-pitch="${pc}" aria-label="${name}">${name}</button>`).join('');
     $('next-question').disabled = true;
     renderShiftHighlights();
@@ -271,7 +271,7 @@
     });
 
     $('target-note').textContent = question.targetName;
-    document.querySelector('.answer-tile').classList.add('revealed');
+    document.querySelector('.answer-tile').classList.add('revealed', pc === question.target ? 'correct' : 'incorrect');
     renderAdvance();
   }
 
@@ -285,9 +285,9 @@
 
     const root = positions.find(p => p.pc === question.root.pc);
     const target = positions.find(p => p.pc === question.target);
-    const connection = question.answered ? `<path d="M ${root.x} ${root.y} Q 140 140 ${target.x} ${target.y}" fill="none" stroke="#d6ae7d" stroke-width="1.7" stroke-dasharray="4 4"/>` : '';
+    const connection = question.answered ? `<path d="M ${root.x} ${root.y} Q 140 140 ${target.x} ${target.y}" fill="none" stroke="var(--${question.answerPc === question.target ? 'green' : 'red'})" stroke-width="1.7" stroke-dasharray="4 4"/>` : '';
 
-    $('circle').innerHTML = `<svg viewBox="0 0 280 280" role="img" aria-label="${t('circleAria', { root: question.root.name })}${question.answered ? t('circleTargetAria', { target: question.targetName }) : ''}"><circle cx="140" cy="140" r="108" fill="none" stroke="#edf0ee"/><circle cx="140" cy="140" r="79" fill="none" stroke="#f0f3f1" stroke-dasharray="2 5"/>${connection}${positions.map(p => {
+    $('circle').innerHTML = `<svg class="${question.answerPc === question.target ? 'correct' : 'incorrect'}" viewBox="0 0 280 280" role="img" aria-label="${t('circleAria', { root: question.root.name })}${question.answered ? t('circleTargetAria', { target: question.targetName }) : ''}"><circle cx="140" cy="140" r="108" fill="none" stroke="#edf0ee"/><circle cx="140" cy="140" r="79" fill="none" stroke="#f0f3f1" stroke-dasharray="2 5"/>${connection}${positions.map(p => {
       const type = p.pc === question.root.pc ? 'root' : question.answered && p.pc === question.target ? 'target' : '';
       const name = type === 'root' ? question.root.name : type === 'target' ? question.targetName : answerNames(question.root)[p.pc];
       return `<circle class="circle-node ${type}" cx="${p.x}" cy="${p.y}" r="18"/><text class="circle-note ${type}" x="${p.x}" y="${p.y + 4.5}" text-anchor="middle">${name}</text>`;
@@ -332,7 +332,7 @@
       const isTarget = question.answered && n.pc === question.target;
       if (!isRoot && !isTarget) return;
       const label = isRoot ? question.root.name : question.targetName;
-      svg += `<circle cx="${n.x}" cy="${n.y}" r="11" fill="${isRoot ? '#287d68' : '#d59353'}" stroke="white" stroke-width="2"/><text x="${n.x}" y="${n.y + 3.2}" text-anchor="middle" fill="white" font-size="${label.length > 2 ? 7 : 9}" font-weight="600">${label}</text>`;
+      svg += `<circle cx="${n.x}" cy="${n.y}" r="11" fill="var(--${isRoot ? 'root' : question.answerPc === question.target ? 'green' : 'red'})" stroke="white" stroke-width="2"/><text x="${n.x}" y="${n.y + 3.2}" text-anchor="middle" fill="white" font-size="${label.length > 2 ? 7 : 9}" font-weight="600">${label}</text>`;
     });
 
     $('fretboard').innerHTML = svg + '</svg>';
