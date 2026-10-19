@@ -282,7 +282,7 @@ h2 {
 
 .root-tile,
 .interval-tile {
-  background: var(--root-light);
+  background: #f7f8f9;
   border: 1px solid var(--root-border);
   color: var(--root);
 }
@@ -313,20 +313,6 @@ h2 {
   font-weight: 400;
 }
 
-.answer-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 11px;
-  color: #687378;
-  margin-bottom: 11px;
-}
-
-.keyboard-hint {
-  font-size: 8px;
-  color: var(--muted);
-}
-
 .answer-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -334,7 +320,7 @@ h2 {
 }
 
 .note-button {
-  height: 38px;
+  height: 44px;
   background: #fff;
   border: 1px solid #a5b2ac;
   border-radius: 7px;
@@ -651,10 +637,6 @@ h2 {
 
   .settings-panel {
     padding: 23px 16px;
-  }
-
-  .keyboard-hint {
-    display: none;
   }
 
   .question-equation {
