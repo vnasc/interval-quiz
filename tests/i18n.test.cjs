@@ -47,6 +47,5 @@ test('dynamic messages interpolate and pluralize in both languages', () => {
   context.state.language = 'pt-BR';
   assert.equal(t('semitonesUp', { count: 1 }), '1 semitom acima');
   assert.equal(t('semitonesUp', { count: 7 }), '7 semitons acima');
-  assert.equal(t('correct', { root: 'C', target: 'E' }), 'Muito bem! C → E.');
   assert.equal(t('strings', { count: 6 }), '6 cordas');
 });

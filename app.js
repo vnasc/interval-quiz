@@ -16,7 +16,6 @@
   ];
 
   const CHORD_TONES = ['m3', 'M3', 'P5', 'm7', 'M7'];
-  const PITCH_NAMES = ['C', 'C♯ / D♭', 'D', 'D♯ / E♭', 'E', 'F', 'F♯ / G♭', 'G', 'G♯ / A♭', 'A', 'A♯ / B♭', 'B'];
   const SHORT_NAMES = ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'F♯', 'G', 'A♭', 'A', 'B♭', 'B'];
   const ROOTS = [{ name: 'C', pc: 0 }, { name: 'D♭', pc: 1 }, { name: 'D', pc: 2 }, { name: 'E♭', pc: 3 }, { name: 'E', pc: 4 }, { name: 'F', pc: 5 }, { name: 'F♯', pc: 6 }, { name: 'G', pc: 7 }, { name: 'A♭', pc: 8 }, { name: 'A', pc: 9 }, { name: 'B♭', pc: 10 }, { name: 'B', pc: 11 }];
   const STORAGE_KEY = 'interval-practice-v1';
@@ -204,11 +203,8 @@
     $('target-note').textContent = '?';
     document.querySelector('.answer-tile').classList.remove('revealed');
     $('answer-grid').innerHTML = answerNames(question.root).map((name, pc) => `<button class="note-button ${name.length > 2 ? 'accidental' : ''}" data-pitch="${pc}" aria-label="${name}">${name}</button>`).join('');
-    $('feedback').className = 'feedback';
-    $('feedback').innerHTML = '';
     $('next-question').disabled = true;
     if (question.answered) renderAnsweredQuestion();
-    if (question.notice) $('feedback').innerHTML = `<span class="feedback-icon">ⓘ</span><span>${t(question.notice)}</span>`;
     renderCircle();
     renderFretboard();
     renderAdvance();
@@ -218,7 +214,6 @@
     if (question.answered) return;
     question.answered = true;
     question.answerPc = pc;
-    delete question.notice;
     const correct = pc === question.target;
     const stats = state.stats;
     question.answerMs = Math.max(0, Math.round(performance.now() - question.startedAt));
@@ -240,10 +235,9 @@
     if (!state.autoNext) $('next-question').focus({ preventScroll: true });
   }
 
-  // Re-render feedback without recording an answer again when the language changes.
+  // Restore answer highlighting without recording an answer again when the language changes.
   function renderAnsweredQuestion() {
     const pc = question.answerPc;
-    const correct = pc === question.target;
 
     document.querySelectorAll('.note-button').forEach(b => {
       b.disabled = true;
@@ -253,9 +247,6 @@
 
     $('target-note').textContent = question.targetName;
     document.querySelector('.answer-tile').classList.add('revealed');
-    $('feedback').className = `feedback ${correct ? 'is-correct' : 'is-wrong'}`;
-    const targetLabel = PITCH_NAMES[question.target].split(' / ').includes(question.targetName) ? question.targetName : `${question.targetName} (${SHORT_NAMES[question.target]})`;
-    $('feedback').innerHTML = `<span class="feedback-icon">${correct ? '✓' : '↗'}</span><span>${t(correct ? 'correct' : 'incorrect', { root: question.root.name, target: targetLabel })}</span>`;
     renderAdvance();
   }
 
@@ -345,8 +336,6 @@
 
     if (!event.target.checked && state.selected.length === 1) {
       event.target.checked = true;
-      question.notice = 'keepOne';
-      $('feedback').innerHTML = `<span class="feedback-icon">ⓘ</span><span>${t('keepOne')}</span>`;
       return;
     }
 
