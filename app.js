@@ -300,19 +300,19 @@
     let svg = `<svg class="fretboard-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="${t('fretboardAria', { count: state.strings, root: question.root.name })}${question.answered ? t('fretboardTargetAria', { target: question.targetName, interval: intervalName(question.interval) }) : '.'}"><rect x="${left}" y="${top - 16}" width="720" height="${bottom - top + 32}" rx="4" fill="#faf9f6"/>`;
 
     [3, 5, 7, 9, 12].forEach(fret => {
-      svg += `<circle cx="${x(fret)}" cy="${(top + bottom) / 2 - (fret === 12 ? 7 : 0)}" r="3.5" fill="#e3e3d9"/>`;
-      if (fret === 12) svg += `<circle cx="${x(fret)}" cy="${(top + bottom) / 2 + 7}" r="3.5" fill="#e3e3d9"/>`;
+      svg += `<circle cx="${x(fret)}" cy="${(top + bottom) / 2 - (fret === 12 ? 7 : 0)}" r="3.5" fill="#929b94"/>`;
+      if (fret === 12) svg += `<circle cx="${x(fret)}" cy="${(top + bottom) / 2 + 7}" r="3.5" fill="#929b94"/>`;
     });
 
     for (let f = 0; f <= 12; f++) {
-      svg += `<text x="${x(f)}" y="14" text-anchor="middle" fill="var(--muted)" font-size="9">${f}</text>`;
-      if (f > 0) svg += `<line x1="${left + f * step}" x2="${left + f * step}" y1="${top - 16}" y2="${bottom + 16}" stroke="#e0e0d9" stroke-width="1.5"/>`;
+      svg += `<text x="${x(f)}" y="14" text-anchor="middle" fill="var(--ink)" font-size="10" font-weight="600">${f}</text>`;
+      if (f > 0) svg += `<line x1="${left + f * step}" x2="${left + f * step}" y1="${top - 16}" y2="${bottom + 16}" stroke="#89958d" stroke-width="1.5"/>`;
     }
 
-    svg += `<line x1="${left}" x2="${left}" y1="${top - 16}" y2="${bottom + 16}" stroke="#b6bbb4" stroke-width="4"/>`;
+    svg += `<line x1="${left}" x2="${left}" y1="${top - 16}" y2="${bottom + 16}" stroke="#59675e" stroke-width="4"/>`;
 
     tuning.forEach((midi, s) => {
-      svg += `<text x="9" y="${top + s * row + 3.5}" text-anchor="middle" fill="var(--muted)" font-size="10">${SHORT_NAMES[midi % 12]}</text><line x1="23" x2="781" y1="${top + s * row}" y2="${top + s * row}" stroke="#c5cac4" stroke-width="${1 + s * .25}"/>`;
+      svg += `<text x="9" y="${top + s * row + 3.5}" text-anchor="middle" fill="var(--ink)" font-size="11" font-weight="600">${SHORT_NAMES[midi % 12]}</text><line x1="23" x2="781" y1="${top + s * row}" y2="${top + s * row}" stroke="#707e74" stroke-width="${1.25 + s * .25}"/>`;
     });
 
     notes.forEach(n => {

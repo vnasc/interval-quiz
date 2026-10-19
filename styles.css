@@ -221,9 +221,10 @@ h2 {
 .segmented button {
   border: 0;
   background: transparent;
-  color: var(--muted);
+  color: var(--ink);
   border-radius: 5px;
   font-size: 10px;
+  font-weight: 600;
   padding: 8px 0;
   flex: 1;
 }
@@ -232,7 +233,7 @@ h2 {
   background: white;
   box-shadow: 0 1px 4px #00000010;
   color: var(--green);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .quiz-panel {
@@ -578,7 +579,7 @@ h2 {
   overflow-wrap: anywhere;
   font-family: "Manrope", sans-serif;
   font-size: 25px;
-  color: var(--green);
+  color: #59656c;
   font-weight: 750;
 }
 
@@ -590,8 +591,9 @@ h2 {
 
 .stats-row > div > span {
   font-size: 8px;
+  font-weight: 600;
   letter-spacing: 1px;
-  color: var(--muted);
+  color: #4f5b62;
 }
 
 .stats-row strong .streak-flame {
