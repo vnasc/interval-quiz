@@ -246,6 +246,44 @@ h2 {
 .quiz-top {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+.audio-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.audio-toggle {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  padding: 4px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.audio-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+.audio-toggle:hover:not(:disabled) {
+  background: #f7f8f9;
+  color: var(--ink);
+}
+
+.audio-toggle.active {
+  color: var(--green);
+}
+
+.audio-toggle:disabled {
+  color: var(--muted);
+  opacity: 0.4;
 }
 
 .question-equation {

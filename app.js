@@ -23,7 +23,7 @@
   const emptyStats = () => ({ total: 0, correct: 0, streak: 0, best: 0, totalAnswerMs: 0, timedAnswers: 0 });
   const browserLocale = globalThis.navigator?.languages?.[0] || globalThis.navigator?.language || '';
   const defaultLanguage = /^pt-BR(?:-|$)/i.test(browserLocale) ? 'pt-BR' : 'en';
-  let state = { selected: [...CHORD_TONES], strings: 4, language: defaultLanguage, autoNext: false, countdownSeconds: 5, stats: emptyStats() };
+  let state = { selected: [...CHORD_TONES], strings: 4, language: defaultLanguage, autoNext: false, countdownSeconds: 5, audioEnabled: false, audioDirection: 'ascending', stats: emptyStats() };
   const { t, intervalName, renderLanguage } = createI18n(() => state.language, $);
 
   try {
@@ -36,6 +36,8 @@
       if (['en', 'pt-BR'].includes(saved.language)) state.language = saved.language;
       if (typeof saved.autoNext === 'boolean') state.autoNext = saved.autoNext;
       if ([3, 5].includes(saved.countdownSeconds)) state.countdownSeconds = saved.countdownSeconds;
+      if (typeof saved.audioEnabled === 'boolean') state.audioEnabled = saved.audioEnabled;
+      if (['ascending', 'descending'].includes(saved.audioDirection)) state.audioDirection = saved.audioDirection;
       const s = saved.stats;
 
       if (s && ['total', 'correct', 'streak', 'best'].every(k => Number.isSafeInteger(s[k]) && s[k] >= 0) && s.correct <= s.total && s.streak <= s.correct && s.best <= s.correct) {
@@ -57,6 +59,76 @@
   let countdownHandle = null;
   let countdownDeadline = null;
   let shiftHeld = false;
+  let audioContext;
+  let playbackId = 0;
+  const activeOscillators = new Set();
+
+  function stopAudio() {
+    playbackId++;
+    activeOscillators.forEach(osc => { try { osc.stop(); } catch {} });
+    activeOscillators.clear();
+  }
+
+  function renderAudioControls() {
+    const speaker = '<path d="M11 5 6 9H3v6h3l5 4V5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>';
+    const sound = state.audioEnabled
+      ? '<path d="M15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>'
+      : '<path d="m16 9 5 6m0-6-5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>';
+    $('audio-direction').disabled = !state.audioEnabled;
+    const descending = state.audioDirection === 'descending';
+    const direction = descending ? 'M5 5 19 19m-8 0h8v-8' : 'M5 19 19 5m-8 0h8v8';
+    for (const [id, icon, label, pressed] of [
+      ['audio-toggle', speaker + sound, t(state.audioEnabled ? 'audioOn' : 'audioOff'), state.audioEnabled],
+      ['audio-direction', `<path d="${direction}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`, t(descending ? 'audioDescending' : 'audioAscending'), descending]
+    ]) {
+      const button = $(id);
+      button.innerHTML = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">${icon}</svg>`;
+      button.setAttribute('aria-label', label);
+      button.setAttribute('aria-pressed', String(pressed));
+      button.title = label;
+      button.classList.toggle('active', id === 'audio-toggle' ? state.audioEnabled : descending);
+    }
+  }
+
+  async function playAnswer(rootPc, answerPc) {
+    if (!state.audioEnabled) return;
+    stopAudio();
+    const id = playbackId;
+    const descending = state.audioDirection === 'descending';
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      audioContext ||= new AudioContext();
+      const ctx = audioContext;
+      if (ctx.state === 'suspended') await ctx.resume();
+      // Never play a stale answer if resuming audio takes a while.
+      if (id !== playbackId || !state.audioEnabled || ctx.state !== 'running') return;
+      const base = ctx.currentTime + 0.25;
+      const duration = 0.6;
+      // Keep the selected note above the root when its pitch class wraps past B.
+      const rootMidi = 48 + rootPc;
+      const notes = [rootMidi, rootMidi + (answerPc - rootPc + 12) % 12];
+
+      if (descending) notes.reverse();
+
+      notes.forEach((midi, index) => {
+        const start = base + index * 0.7;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.value = 440 * Math.pow(2, (midi - 69) / 12);
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.exponentialRampToValueAtTime(0.16, start + 0.025);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        activeOscillators.add(osc);
+        osc.onended = () => { activeOscillators.delete(osc); osc.disconnect(); gain.disconnect(); };
+        osc.start(start);
+        osc.stop(start + duration + 0.03);
+      });
+    } catch { /* Audio unavailable or blocked: the quiz still works silently. */ }
+  }
 
   function save() {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
@@ -110,6 +182,7 @@
   }
 
   function renderSettings() {
+    renderAudioControls();
     $('interval-options').innerHTML = INTERVALS.map(i => `<label class="interval-option ${state.selected.includes(i.id) ? 'selected' : ''}"><input type="checkbox" value="${i.id}" ${state.selected.includes(i.id) ? 'checked' : ''}><span class="check-box" aria-hidden="true">✓</span><span class="${i.id === 'TT' ? 'long-label' : ''}">${intervalName(i)}</span><span class="interval-abbr">${i.id === 'TT' ? '±4' : i.id}</span></label>`).join('');
     $('select-all').textContent = t(state.selected.length === INTERVALS.length ? 'chordTones' : 'selectAll');
 
@@ -208,6 +281,7 @@
     questionNumber++;
     renderQuestion();
     question.startedAt = performance.now();
+    stopAudio();
   }
 
   function renderQuestion() {
@@ -227,6 +301,7 @@
 
   function answer(pc) {
     if (question.answered) return;
+    playAnswer(question.root.pc, pc);
     question.answered = true;
     question.answerPc = pc;
     const correct = pc === question.target;
@@ -376,6 +451,22 @@
     save();
     renderSettings();
     renderFretboard();
+  });
+
+  $('audio-toggle').addEventListener('click', () => {
+    state.audioEnabled = !state.audioEnabled;
+    if (!state.audioEnabled) stopAudio();
+    save();
+    renderAudioControls();
+  });
+
+  $('audio-direction').addEventListener('click', () => {
+    if (!state.audioEnabled) return;
+    state.audioDirection = state.audioDirection === 'ascending' ? 'descending' : 'ascending';
+    stopAudio();
+    save();
+    renderAudioControls();
+    if (question.answered) playAnswer(question.root.pc, question.answerPc);
   });
 
   $('answer-grid').addEventListener('click', event => {
