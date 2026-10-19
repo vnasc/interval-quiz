@@ -113,19 +113,29 @@
 
       notes.forEach((midi, index) => {
         const start = base + index * 0.7;
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.value = 440 * Math.pow(2, (midi - 69) / 12);
-        gain.gain.setValueAtTime(0.0001, start);
-        gain.gain.exponentialRampToValueAtTime(0.16, start + 0.025);
-        gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        activeOscillators.add(osc);
-        osc.onended = () => { activeOscillators.delete(osc); osc.disconnect(); gain.disconnect(); };
-        osc.start(start);
-        osc.stop(start + duration + 0.03);
+        const frequency = 440 * Math.pow(2, (midi - 69) / 12);
+        // A clear fundamental with softer, faster-decaying upper harmonics.
+        const partials = [
+          { harmonic: 1, volume: 0.12, decay: duration },
+          { harmonic: 2, volume: 0.035, decay: 0.42 },
+          { harmonic: 3, volume: 0.018, decay: 0.3 },
+          { harmonic: 4, volume: 0.008, decay: 0.22 }
+        ];
+        partials.forEach(({ harmonic, volume, decay }) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = frequency * harmonic;
+          gain.gain.setValueAtTime(0.0001, start);
+          gain.gain.exponentialRampToValueAtTime(volume, start + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.0001, start + decay);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          activeOscillators.add(osc);
+          osc.onended = () => { activeOscillators.delete(osc); osc.disconnect(); gain.disconnect(); };
+          osc.start(start);
+          osc.stop(start + decay + 0.03);
+        });
       });
     } catch { /* Audio unavailable or blocked: the quiz still works silently. */ }
   }

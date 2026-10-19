@@ -5,21 +5,42 @@ const { loadApp } = require('./helpers/load-app.cjs');
 function mockAudio(app, state = 'running') {
   app.api.state.audioEnabled = true;
   const notes = [];
+  const partials = [];
   const ctx = {
     state, currentTime: 0, destination: {},
     resume() { this.state = 'running'; return Promise.resolve(); },
     createOscillator() {
       return { frequency: {}, connect() {}, disconnect() {},
-        start(start) { notes.push({ frequency: this.frequency.value, start }); }, stop() {} };
+        start(start) {
+          const partial = { frequency: this.frequency.value, start, type: this.type };
+          partials.push(partial);
+          // One note consists of multiple partials sharing a start time.
+          if (!notes.some(note => note.start === start)) notes.push(partial);
+        }, stop() {} };
     },
     createGain() {
       return { gain: { setValueAtTime() {}, exponentialRampToValueAtTime() {} }, connect() {}, disconnect() {} };
     }
   };
   app.context.window.AudioContext = function () { return ctx; };
-  return { notes, ctx };
+  return { notes, partials, ctx };
 }
 const frequency = midi => 440 * Math.pow(2, (midi - 69) / 12);
+
+test('each note has four sine harmonics with a strong fundamental', () => {
+  const app = loadApp();
+  const { partials } = mockAudio(app);
+  app.api.answer(app.api.question.target);
+  assert.equal(partials.length, 8);
+  for (const offset of [0, 4]) {
+    const fundamental = partials[offset];
+    for (let i = 0; i < 4; i++) {
+      assert.equal(partials[offset + i].type, 'sine');
+      assert.equal(partials[offset + i].frequency, fundamental.frequency * (i + 1));
+      assert.equal(partials[offset + i].start, fundamental.start);
+    }
+  }
+});
 
 test('audio defaults off and invalid saved preferences are ignored', () => {
   for (const saved of [null, { audioEnabled: 'true', audioDirection: 'invalid' }]) {
