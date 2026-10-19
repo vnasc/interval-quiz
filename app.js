@@ -504,11 +504,9 @@
   });
 
   $('reset-stats').addEventListener('click', () => {
-    if (!state.stats.total || window.confirm(t('resetConfirm'))) {
-      state.stats = emptyStats();
-      save();
-      renderStats();
-    }
+    state.stats = emptyStats();
+    save();
+    renderStats();
   });
 
   document.addEventListener('keydown', event => {
