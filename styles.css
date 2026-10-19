@@ -335,19 +335,19 @@ h2 {
 .note-button {
   height: 38px;
   background: #fff;
-  border: 1px solid #e2e7e9;
+  border: 1px solid #a5b2ac;
   border-radius: 7px;
   font-size: 13px;
-  font-weight: 550;
-  color: #48555a;
+  font-weight: 650;
+  color: var(--ink);
   transition:
     background 0.15s,
     transform 0.15s;
 }
 
 .note-button:hover:not(:disabled) {
-  border-color: #81ad9f;
-  background: #f0f7f3;
+  border-color: var(--root);
+  background: var(--root-light);
   transform: translateY(-1px);
 }
 
@@ -373,8 +373,9 @@ h2 {
 }
 
 .note-button:disabled:not(.correct):not(.incorrect) {
-  color: #b3b9bc;
-  background: #fafbfb;
+  color: var(--muted);
+  border-color: #cbd1d5;
+  background: #f4f5f6;
 }
 
 .next-button {
@@ -444,8 +445,8 @@ h2 {
 
 .circle-node {
   fill: #fff;
-  stroke: #e8edeb;
-  stroke-width: 1;
+  stroke: #a5b2ac;
+  stroke-width: 1.25;
 }
 
 .circle-node.root {
@@ -454,11 +455,11 @@ h2 {
 }
 
 .circle-node.target {
-  stroke-width: 1.5;
+  stroke-width: 2;
 }
 
 .correct .circle-node.target {
-  fill: var(--green-light);
+  fill: var(--green);
   stroke: var(--green);
 }
 
@@ -469,9 +470,9 @@ h2 {
 
 .circle-note {
   font-family: var(--font);
-  fill: var(--muted);
+  fill: var(--ink);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   pointer-events: none;
 }
 
@@ -480,7 +481,7 @@ h2 {
 }
 
 .correct .circle-note.target {
-  fill: var(--green);
+  fill: white;
 }
 
 .incorrect .circle-note.target {
