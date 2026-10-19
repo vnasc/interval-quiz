@@ -6,6 +6,7 @@ function mockAudio(app, state = 'running') {
   app.api.state.audioEnabled = true;
   const notes = [];
   const partials = [];
+  const envelopes = [];
   const ctx = {
     state, currentTime: 0, destination: {},
     resume() { this.state = 'running'; return Promise.resolve(); },
@@ -19,11 +20,16 @@ function mockAudio(app, state = 'running') {
         }, stop() {} };
     },
     createGain() {
-      return { gain: { setValueAtTime() {}, exponentialRampToValueAtTime() {} }, connect() {}, disconnect() {} };
+      const envelope = [];
+      envelopes.push(envelope);
+      return { gain: {
+        setValueAtTime(value, time) { envelope.push({ value, time }); },
+        exponentialRampToValueAtTime(value, time) { envelope.push({ value, time }); }
+      }, connect() {}, disconnect() {} };
     }
   };
   app.context.window.AudioContext = function () { return ctx; };
-  return { notes, partials, ctx };
+  return { notes, partials, envelopes, ctx };
 }
 const frequency = midi => 440 * Math.pow(2, (midi - 69) / 12);
 
@@ -40,6 +46,18 @@ test('each note has four sine harmonics with a strong fundamental', () => {
       assert.equal(partials[offset + i].start, fundamental.start);
     }
   }
+});
+
+test('root remains audible when the second note enters before fading out', () => {
+  const app = loadApp();
+  const { notes, envelopes } = mockAudio(app);
+  app.api.answer(app.api.question.target);
+  const rootEnvelope = envelopes[0];
+  assert.ok(rootEnvelope.some(point =>
+    Math.abs(point.time - notes[1].start) < 1e-9 && point.value === 0.12 * 0.3));
+  const release = rootEnvelope.at(-1);
+  assert.equal(release.value, 0.0001);
+  assert.ok(Math.abs(release.time - notes[1].start - 0.2) < 1e-9);
 });
 
 test('audio defaults off and invalid saved preferences are ignored', () => {
@@ -145,7 +163,7 @@ test('answers play root then selected pitch ascending, only once', () => {
     app.api.answer(0);
     assert.deepEqual(notes.map(n => n.frequency), [frequency(59), frequency(60)]);
     assert.equal(notes[0].start, 0.25, 'wait a quarter of a second before playing the root');
-    assert.ok(Math.abs(notes[1].start - notes[0].start - 0.9) < 1e-9);
+    assert.ok(Math.abs(notes[1].start - notes[0].start - 0.6) < 1e-9);
     app.api.answer(1);
     assert.equal(notes.length, 2);
   }

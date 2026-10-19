@@ -112,7 +112,7 @@
       if (descending) notes.reverse();
 
       notes.forEach((midi, index) => {
-        const start = base + index * 0.9;
+        const start = base + index * 0.6;
         const frequency = 440 * Math.pow(2, (midi - 69) / 12);
         // A clear fundamental with softer, faster-decaying upper harmonics.
         const partials = [
@@ -128,6 +128,10 @@
           osc.frequency.value = frequency * harmonic;
           gain.gain.setValueAtTime(0.0001, start);
           gain.gain.exponentialRampToValueAtTime(volume, start + 0.015);
+          if (harmonic === 1) {
+            // Keep the root audible as the next note enters, then release it.
+            gain.gain.exponentialRampToValueAtTime(volume * 0.3, start + 0.6);
+          }
           gain.gain.exponentialRampToValueAtTime(0.0001, start + decay);
           osc.connect(gain);
           gain.connect(ctx.destination);
