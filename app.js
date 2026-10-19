@@ -104,7 +104,7 @@
       // Never play a stale answer if resuming audio takes a while.
       if (id !== playbackId || !state.audioEnabled || ctx.state !== 'running') return;
       const base = ctx.currentTime + 0.25;
-      const duration = 0.6;
+      const duration = 0.8;
       // Keep the selected note above the root when its pitch class wraps past B.
       const rootMidi = 48 + rootPc;
       const notes = [rootMidi, rootMidi + (answerPc - rootPc + 12) % 12];
@@ -112,14 +112,14 @@
       if (descending) notes.reverse();
 
       notes.forEach((midi, index) => {
-        const start = base + index * 0.7;
+        const start = base + index * 0.9;
         const frequency = 440 * Math.pow(2, (midi - 69) / 12);
         // A clear fundamental with softer, faster-decaying upper harmonics.
         const partials = [
           { harmonic: 1, volume: 0.12, decay: duration },
-          { harmonic: 2, volume: 0.035, decay: 0.42 },
-          { harmonic: 3, volume: 0.018, decay: 0.3 },
-          { harmonic: 4, volume: 0.008, decay: 0.22 }
+          { harmonic: 2, volume: 0.035, decay: 0.56 },
+          { harmonic: 3, volume: 0.018, decay: 0.4 },
+          { harmonic: 4, volume: 0.008, decay: 0.29 }
         ];
         partials.forEach(({ harmonic, volume, decay }) => {
           const osc = ctx.createOscillator();

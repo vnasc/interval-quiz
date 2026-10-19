@@ -145,7 +145,7 @@ test('answers play root then selected pitch ascending, only once', () => {
     app.api.answer(0);
     assert.deepEqual(notes.map(n => n.frequency), [frequency(59), frequency(60)]);
     assert.equal(notes[0].start, 0.25, 'wait a quarter of a second before playing the root');
-    assert.ok(Math.abs(notes[1].start - notes[0].start - 0.7) < 1e-9);
+    assert.ok(Math.abs(notes[1].start - notes[0].start - 0.9) < 1e-9);
     app.api.answer(1);
     assert.equal(notes.length, 2);
   }
