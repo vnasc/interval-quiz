@@ -3,12 +3,12 @@ const assert = require('node:assert/strict');
 const { loadApp } = require('./helpers/load-app.cjs');
 
 function chooseMode(app, mode) {
-  app.element('advance-mode').handlers.get('click')({
-    target: { closest: () => ({ dataset: { advance: mode } }) }
-  });
+  chooseDelay(app, mode === 'manual' ? 0 : app.api.state.countdownSeconds);
 }
 function chooseDelay(app, seconds) {
-  app.element('countdown-seconds').handlers.get('change')({ target: { value: String(seconds) } });
+  app.element('advance-mode').handlers.get('click')({
+    target: { closest: () => ({ dataset: { advance: String(seconds) } }) }
+  });
 }
 
 test('manual mode remains the default and never starts a timer', () => {
@@ -71,9 +71,9 @@ test('changing the delay restarts the timer without recording another answer', (
   chooseMode(app, 'countdown');
   app.api.answer(app.api.question.target);
   app.advance(4000);
-  chooseDelay(app, 10);
-  assert.equal(app.element('countdown-label').textContent, '10');
-  app.advance(9999);
+  chooseDelay(app, 3);
+  assert.equal(app.element('countdown-label').textContent, '3');
+  app.advance(2999);
   assert.equal(app.api.questionNumber, 1);
   app.advance(1);
   assert.equal(app.api.questionNumber, 2);

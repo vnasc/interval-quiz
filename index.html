@@ -25,10 +25,7 @@
 
           <div id="interval-options" class="interval-options"></div>
           <div class="settings-divider"></div>
-          <div class="section-label" data-i18n="advanceLabel">
-            NEXT QUESTION
-          </div>
-
+          <div class="section-label" data-i18n="advanceLabel">NEXT QUESTION</div>
           <div
             class="segmented"
             id="advance-mode"
@@ -36,32 +33,9 @@
             aria-label="Next question mode"
             data-i18n-aria="advanceGroup"
           >
-            <button
-              data-advance="manual"
-              aria-pressed="true"
-              data-i18n="advanceManual"
-            >
-              Manual
-            </button>
-
-            <button
-              data-advance="countdown"
-              aria-pressed="false"
-              data-i18n="advanceCountdown"
-            >
-              Countdown
-            </button>
-          </div>
-
-          <div class="countdown-options" id="countdown-options" hidden>
-            <label for="countdown-seconds" data-i18n="countdownDelay"
-              >Delay after answering</label
-            >
-            <select id="countdown-seconds">
-              <option value="3">3 seconds</option>
-              <option value="5" selected>5 seconds</option>
-              <option value="10">10 seconds</option>
-            </select>
+            <button data-advance="0" aria-pressed="true" data-i18n="advanceManual">Manual</button>
+            <button data-advance="3" aria-pressed="false">3 seconds</button>
+            <button data-advance="5" aria-pressed="false">5 seconds</button>
           </div>
 
           <div class="settings-divider"></div>

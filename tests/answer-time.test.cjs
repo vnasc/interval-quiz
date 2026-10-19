@@ -59,14 +59,14 @@ test('legacy scores are preserved without counting untimed answers in the averag
 });
 
 test('saved timing data is restored and reset clears it, keeping preferences', () => {
-  const app = loadApp({ autoNext: true, countdownSeconds: 10, stats: stats({ totalAnswerMs: 5000, timedAnswers: 2 }) });
+  const app = loadApp({ autoNext: true, countdownSeconds: 3, stats: stats({ totalAnswerMs: 5000, timedAnswers: 2 }) });
   assert.equal(app.element('answer-time').textContent, '2.5s');
   app.element('reset-stats').handlers.get('click')();
   assert.equal(app.api.state.stats.totalAnswerMs, 0);
   assert.equal(app.api.state.stats.timedAnswers, 0);
   assert.equal(app.element('answer-time').textContent, '—');
   assert.equal(app.api.state.autoNext, true);
-  assert.equal(app.api.state.countdownSeconds, 10);
+  assert.equal(app.api.state.countdownSeconds, 3);
 });
 
 test('invalid timing data is ignored without discarding valid scores', () => {

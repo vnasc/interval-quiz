@@ -911,31 +911,6 @@ html[lang="pt-BR"] .fretboard-header .panel-heading {
   }
 }
 
-.countdown-options:not([hidden]) {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.countdown-options label {
-  font-size: 9px;
-  color: var(--muted);
-  line-height: 1.5;
-}
-
-.countdown-options select {
-  min-width: 78px;
-  padding: 6px;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: white;
-  color: var(--green);
-  font-family: inherit;
-  font-size: 10px;
-}
-
 .next-countdown {
   font-size: 17px;
   font-weight: 750;

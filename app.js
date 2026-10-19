@@ -35,7 +35,7 @@
       if ([4, 5, 6].includes(saved.strings)) state.strings = saved.strings;
       if (['en', 'pt-BR'].includes(saved.language)) state.language = saved.language;
       if (typeof saved.autoNext === 'boolean') state.autoNext = saved.autoNext;
-      if ([3, 5, 10].includes(saved.countdownSeconds)) state.countdownSeconds = saved.countdownSeconds;
+      if ([3, 5].includes(saved.countdownSeconds)) state.countdownSeconds = saved.countdownSeconds;
       const s = saved.stats;
 
       if (s && ['total', 'correct', 'streak', 'best'].every(k => Number.isSafeInteger(s[k]) && s[k] >= 0) && s.correct <= s.total && s.streak <= s.correct && s.best <= s.correct) {
@@ -125,16 +125,11 @@
     });
 
     document.querySelectorAll('[data-advance]').forEach(button => {
-      const active = (button.dataset.advance === 'countdown') === state.autoNext;
+      const seconds = Number(button.dataset.advance);
+      const active = seconds === (state.autoNext ? state.countdownSeconds : 0);
       button.classList.toggle('active', active);
       button.setAttribute('aria-pressed', String(active));
-    });
-
-    $('countdown-options').hidden = !state.autoNext;
-    $('countdown-seconds').value = String(state.countdownSeconds);
-
-    document.querySelectorAll('#countdown-seconds option').forEach(option => {
-      option.textContent = t('seconds', { count: option.value });
+      button.textContent = seconds === 0 ? t('advanceManual') : t('seconds', { count: seconds });
     });
   }
 
@@ -400,18 +395,11 @@
   $('advance-mode').addEventListener('click', event => {
     const button = event.target.closest('[data-advance]');
     if (!button) return;
-    const autoNext = button.dataset.advance === 'countdown';
-    if (autoNext === state.autoNext) return;
-    state.autoNext = autoNext;
-    save();
-    renderSettings();
-    startCountdown();
-  });
-
-  $('countdown-seconds').addEventListener('change', event => {
-    const seconds = Number(event.target.value);
-    if (![3, 5, 10].includes(seconds)) return;
-    state.countdownSeconds = seconds;
+    const seconds = Number(button.dataset.advance);
+    if (![0, 3, 5].includes(seconds)) return;
+    if (seconds === (state.autoNext ? state.countdownSeconds : 0)) return;
+    state.autoNext = seconds !== 0;
+    if (state.autoNext) state.countdownSeconds = seconds;
     save();
     renderSettings();
     startCountdown();
