@@ -3,7 +3,7 @@
 :root {
   --bg: #f7f8fa;
   --ink: #253039;
-  --muted: #869098;
+  --muted: #606d73;
   --line: #e8ecee;
   --green: #287d68;
   --green-light: #eaf5ef;
@@ -192,7 +192,7 @@ h2 {
 .interval-option .interval-abbr {
   margin-left: auto;
   font-size: 10px;
-  color: #919a95;
+  color: var(--muted);
 }
 
 .interval-option .long-label {
@@ -217,7 +217,7 @@ h2 {
 .segmented button {
   border: 0;
   background: transparent;
-  color: #8c9699;
+  color: var(--muted);
   border-radius: 5px;
   font-size: 10px;
   padding: 8px 0;
@@ -290,7 +290,7 @@ h2 {
 .answer-tile {
   position: relative;
   border: 1px dashed #d6dddf;
-  color: #a0a9ae;
+  color: var(--muted);
   background: #fcfdfd;
 }
 
@@ -303,7 +303,7 @@ h2 {
 .equation-plus,
 .equation-arrow {
   font-size: 22px;
-  color: #aeb8b9;
+  color: var(--muted);
   font-weight: 400;
 }
 
@@ -318,7 +318,7 @@ h2 {
 
 .keyboard-hint {
   font-size: 8px;
-  color: #a2aaad;
+  color: var(--muted);
 }
 
 .answer-grid {
@@ -452,7 +452,7 @@ h2 {
 
 .circle-note {
   font-family: var(--font);
-  fill: #74807d;
+  fill: var(--muted);
   font-size: 13px;
   font-weight: 500;
   pointer-events: none;
@@ -562,14 +562,14 @@ h2 {
 
 .stats-row strong span {
   font-size: 14px;
-  color: #a5afad;
+  color: var(--muted);
   font-weight: 400;
 }
 
 .stats-row > div > span {
   font-size: 8px;
   letter-spacing: 1px;
-  color: #9aa3a0;
+  color: var(--muted);
 }
 
 .stats-row strong .streak-flame {
@@ -581,7 +581,7 @@ h2 {
 .details-toggle {
   align-self: center;
   font-size: 10px;
-  color: #94a49b;
+  color: var(--muted);
 }
 
 #stats-details {
@@ -600,7 +600,7 @@ h2 {
   display: flex;
   justify-content: space-between;
   font-size: 10px;
-  color: #85938c;
+  color: var(--muted);
   gap: 10px;
 }
 
@@ -899,7 +899,7 @@ html[lang="pt-BR"] .fretboard-header .panel-heading {
 
 .countdown-options label {
   font-size: 9px;
-  color: #869098;
+  color: var(--muted);
   line-height: 1.5;
 }
 

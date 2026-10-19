@@ -292,14 +292,14 @@
     });
 
     for (let f = 0; f <= 12; f++) {
-      svg += `<text x="${x(f)}" y="14" text-anchor="middle" fill="#9ca5a0" font-size="9">${f}</text>`;
+      svg += `<text x="${x(f)}" y="14" text-anchor="middle" fill="var(--muted)" font-size="9">${f}</text>`;
       if (f > 0) svg += `<line x1="${left + f * step}" x2="${left + f * step}" y1="${top - 16}" y2="${bottom + 16}" stroke="#e0e0d9" stroke-width="1.5"/>`;
     }
 
     svg += `<line x1="${left}" x2="${left}" y1="${top - 16}" y2="${bottom + 16}" stroke="#b6bbb4" stroke-width="4"/>`;
 
     tuning.forEach((midi, s) => {
-      svg += `<text x="9" y="${top + s * row + 3.5}" text-anchor="middle" fill="#77877f" font-size="10">${SHORT_NAMES[midi % 12]}</text><line x1="23" x2="781" y1="${top + s * row}" y2="${top + s * row}" stroke="#c5cac4" stroke-width="${1 + s * .25}"/>`;
+      svg += `<text x="9" y="${top + s * row + 3.5}" text-anchor="middle" fill="var(--muted)" font-size="10">${SHORT_NAMES[midi % 12]}</text><line x1="23" x2="781" y1="${top + s * row}" y2="${top + s * row}" stroke="#c5cac4" stroke-width="${1 + s * .25}"/>`;
     });
 
     notes.forEach(n => {
