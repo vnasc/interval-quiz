@@ -360,9 +360,9 @@
   function renderFretboard() {
     // MIDI values keep octave and direction intact when finding playable interval pairs.
     const tuning = state.strings === 4 ? [43, 38, 33, 28] : state.strings === 5 ? [43, 38, 33, 28, 23] : [48, 43, 38, 33, 28, 23];
-    const width = 800, left = 61, step = 60, top = 36, row = 35;
+    const width = 790, left = 61, step = 60, top = 36, row = 35;
     const bottom = top + (tuning.length - 1) * row;
-    const height = bottom + 30;
+    const height = bottom + 22;
     const x = fret => fret === 0 ? 36 : left + (fret - .5) * step;
     const notes = [];
 
