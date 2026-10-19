@@ -156,12 +156,12 @@ h2 {
 }
 
 .interval-option.selected {
-  background: #f1f7f3;
-  border-color: #e4eee7;
+  background: var(--bg);
+  border-color: var(--line);
 }
 
 .interval-option:hover {
-  background: #f4f7f5;
+  background: var(--bg);
 }
 
 .interval-option input {
@@ -172,7 +172,7 @@ h2 {
 }
 
 .interval-option:has(input:focus-visible) {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--ink);
 }
 
 .check-box {
@@ -188,9 +188,9 @@ h2 {
 }
 
 .selected .check-box {
-  background: var(--green);
+  background: var(--ink);
   color: white;
-  border-color: var(--green);
+  border-color: var(--ink);
 }
 
 .interval-option .interval-abbr {
@@ -232,7 +232,7 @@ h2 {
 .segmented button.active {
   background: white;
   box-shadow: 0 1px 4px #00000010;
-  color: var(--green);
+  color: var(--ink);
   font-weight: 700;
 }
 
@@ -574,14 +574,15 @@ h2 {
   font-size: 13px;
   padding: 10px 14px;
   min-height: 40px;
-  border: 1px solid #d5e9df;
+  border: 1px solid var(--line);
   border-radius: 7px;
-  background: #f1f7f3;
+  background: var(--bg);
+  color: var(--ink);
   white-space: nowrap;
 }
 
 .stats-panel .reset-button:hover {
-  background: #e4eee7;
+  background: var(--bg);
   text-decoration: none;
 }
 
