@@ -20,7 +20,7 @@
   const ROOTS = [{ name: 'C', pc: 0 }, { name: 'D♭', pc: 1 }, { name: 'D', pc: 2 }, { name: 'E♭', pc: 3 }, { name: 'E', pc: 4 }, { name: 'F', pc: 5 }, { name: 'F♯', pc: 6 }, { name: 'G', pc: 7 }, { name: 'A♭', pc: 8 }, { name: 'A', pc: 9 }, { name: 'B♭', pc: 10 }, { name: 'B', pc: 11 }];
   const STORAGE_KEY = 'interval-practice-v1';
   const $ = id => document.getElementById(id);
-  const emptyStats = () => ({ total: 0, correct: 0, streak: 0, best: 0, totalAnswerMs: 0, timedAnswers: 0, intervals: {} });
+  const emptyStats = () => ({ total: 0, correct: 0, streak: 0, best: 0, totalAnswerMs: 0, timedAnswers: 0 });
   const browserLocale = globalThis.navigator?.languages?.[0] || globalThis.navigator?.language || '';
   const defaultLanguage = /^pt-BR(?:-|$)/i.test(browserLocale) ? 'pt-BR' : 'en';
   let state = { selected: [...CHORD_TONES], strings: 4, language: defaultLanguage, autoNext: false, countdownSeconds: 5, stats: emptyStats() };
@@ -39,7 +39,7 @@
       const s = saved.stats;
 
       if (s && ['total', 'correct', 'streak', 'best'].every(k => Number.isSafeInteger(s[k]) && s[k] >= 0) && s.correct <= s.total && s.streak <= s.correct && s.best <= s.correct) {
-        state.stats = { ...s, totalAnswerMs: 0, timedAnswers: 0, intervals: {} };
+        state.stats = { total: s.total, correct: s.correct, streak: s.streak, best: s.best, totalAnswerMs: 0, timedAnswers: 0 };
 
         // Older scores have no timing data: average only the measured answers.
         if (Number.isSafeInteger(s.totalAnswerMs) && s.totalAnswerMs >= 0 && Number.isSafeInteger(s.timedAnswers) && s.timedAnswers >= 0 && s.timedAnswers <= s.total && (s.timedAnswers > 0 || s.totalAnswerMs === 0)) {
@@ -47,10 +47,6 @@
           state.stats.timedAnswers = s.timedAnswers;
         }
 
-        for (const interval of INTERVALS) {
-          const entry = s.intervals?.[interval.id];
-          if (entry && Number.isSafeInteger(entry.total) && Number.isSafeInteger(entry.correct) && entry.total >= 0 && entry.correct >= 0 && entry.correct <= entry.total) state.stats.intervals[interval.id] = entry;
-        }
       }
     }
   } catch { /* Private browsing or unavailable storage: practice still works. */ }
@@ -242,9 +238,6 @@
     if (correct) stats.correct++;
     stats.streak = correct ? stats.streak + 1 : 0;
     stats.best = Math.max(stats.best, stats.streak);
-    const entry = stats.intervals[question.interval.id] ||= { total: 0, correct: 0 };
-    entry.total++;
-    if (correct) entry.correct++;
     save();
     renderAnsweredQuestion();
     renderStats();
@@ -344,10 +337,6 @@
       ? `${new Intl.NumberFormat(state.language, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(s.totalAnswerMs / s.timedAnswers / 1000)}s`
       : '—';
 
-    $('stats-details').innerHTML = INTERVALS.map(i => {
-      const entry = s.intervals[i.id];
-      return `<div class="detail-row"><span>${intervalName(i)}</span><strong>${entry?.total ? `${entry.correct}/${entry.total} · ${Math.round(entry.correct / entry.total * 100)}%` : t('notPracticed')}</strong></div>`;
-    }).join('');
   }
 
   $('interval-options').addEventListener('change', event => {
@@ -411,13 +400,6 @@
       save();
       renderStats();
     }
-  });
-
-  $('details-toggle').addEventListener('click', () => {
-    const hidden = !$('stats-details').hidden;
-    $('stats-details').hidden = hidden;
-    $('details-toggle').setAttribute('aria-expanded', String(!hidden));
-    $('details-toggle').innerHTML = `${t('breakdown')} <span>${hidden ? '⌄' : '⌃'}</span>`;
   });
 
   document.addEventListener('keydown', event => {

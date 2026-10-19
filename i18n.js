@@ -75,8 +75,6 @@ const TRANSLATIONS = {
     statsStreak:
       "{streak} in a row. You’re finding your rhythm! Best streak: {best}.",
     statsPractice: "Every answer is practice. Best streak: {best}.",
-    breakdown: "Interval breakdown",
-    notPracticed: "Not practiced",
     resetConfirm:
       "Reset all practice statistics? Your interval and bass settings will stay the same.",
     footer: "A little practice, a better ear.",
@@ -172,8 +170,6 @@ const TRANSLATIONS = {
     statsStreak:
       "{streak} acertos seguidos. Você está pegando o ritmo! Melhor sequência: {best}.",
     statsPractice: "Cada resposta é um treino. Melhor sequência: {best}.",
-    breakdown: "Resultados por intervalo",
-    notPracticed: "Não praticado",
     resetConfirm:
       "Zerar todas as estatísticas? Os intervalos selecionados e as configurações do baixo serão mantidos.",
     footer: "Um pouco de prática, um ouvido melhor.",
@@ -228,8 +224,6 @@ function createI18n(getLanguage, $) {
       button.setAttribute("aria-pressed", String(active));
     });
 
-    $("details-toggle").innerHTML =
-      `${t("breakdown")} <span>${$("stats-details").hidden ? "⌄" : "⌃"}</span>`;
   }
 
   return { t, intervalName, renderLanguage };
