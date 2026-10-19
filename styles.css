@@ -288,6 +288,7 @@ h2 {
 }
 
 .answer-tile {
+  position: relative;
   border: 1px dashed #d6dddf;
   color: #a0a9ae;
   background: #fcfdfd;
@@ -403,17 +404,30 @@ h2 {
 }
 
 .next-button {
-  border: 0;
-  border-radius: 6px;
-  padding: 10px 12px;
-  color: white;
-  background: var(--green);
-  font-size: 10px;
-  white-space: nowrap;
+  position: absolute;
+  left: calc(100% + 24px);
+  top: 50%;
+  transform: translateY(-50%);
+  place-items: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #c8c7c0;
+  border-radius: 50%;
+  padding: 0;
+  color: #55544e;
+  background: #f0efeb;
+  box-shadow: 0 2px 7px #d8875930;
+  transition: background 0.15s, border-color 0.15s;
 }
 
-.next-button span {
-  margin-left: 10px;
+.next-button:not([hidden]) {
+  display: grid;
+}
+
+.next-button svg {
+  width: 18px;
+  height: 18px;
 }
 
 .next-button:disabled {
@@ -422,7 +436,9 @@ h2 {
 }
 
 .next-button:hover:not(:disabled) {
-  background: #206450;
+  border-color: #b5b4ad;
+  background: #e7e6e1;
+  color: #3f3e39;
 }
 
 .circle-panel {
@@ -742,7 +758,6 @@ h2 {
   .fretboard-header {
     display: block;
   }
-
 }
 
 @media (max-width: 620px) {
@@ -792,12 +807,19 @@ h2 {
   }
 
   .question-equation {
-    gap: 14px;
+    gap: 8px;
   }
 
   .question-equation > div {
-    width: 78px;
+    width: clamp(52px, 14vw, 62px);
     height: 82px;
+    flex-shrink: 0;
+  }
+
+  .next-button {
+    left: calc(100% + 8px);
+    width: 28px;
+    height: 28px;
   }
 
   .circle-container {
@@ -884,10 +906,6 @@ h2 {
   box-shadow: 0 1px 4px #0000000c;
 }
 
-.next-button > span:first-child {
-  margin-left: 0;
-}
-
 html[lang="pt-BR"] .fretboard-header .panel-heading {
   flex-wrap: wrap;
 }
@@ -899,14 +917,6 @@ html[lang="pt-BR"] .fretboard-header .panel-heading {
 
   .quiz-bottom {
     align-items: flex-start;
-  }
-
-  .next-button {
-    padding: 10px;
-  }
-
-  .next-button > span:last-child {
-    margin-left: 5px;
   }
 
   html[lang="pt-BR"] .interval-option {
@@ -940,23 +950,8 @@ html[lang="pt-BR"] .fretboard-header .panel-heading {
 }
 
 .next-countdown {
-  border: 1px solid #d5e9df;
-  border-radius: 6px;
-  padding: 9px 11px;
-  color: var(--green);
-  background: #f1f7f3;
-  font-size: 10px;
-  white-space: nowrap;
-}
-
-.next-countdown:not([hidden]) {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-
-.next-countdown > span:first-child {
-  font-size: 16px;
+  font-size: 17px;
+  font-weight: 750;
   line-height: 1;
 }
 

@@ -14,13 +14,16 @@ function chooseDelay(app, seconds) {
 test('manual mode remains the default and never starts a timer', () => {
   const app = loadApp();
   assert.equal(app.api.state.autoNext, false);
+  assert.equal(app.element('next-question').hidden, true);
   app.api.answer(app.api.question.target);
   app.advance(20000);
   assert.equal(app.api.questionNumber, 1);
   assert.equal(app.element('next-question').disabled, false);
   assert.equal(app.element('next-question').hidden, false);
-  assert.equal(app.element('next-countdown').hidden, true);
+  assert.equal(app.element('countdown-label').hidden, true);
   assert.equal(app.timers.size, 0);
+  app.api.newQuestion();
+  assert.equal(app.element('next-question').hidden, true);
 });
 
 test('countdown starts only after answering and advances exactly once', () => {
@@ -30,10 +33,13 @@ test('countdown starts only after answering and advances exactly once', () => {
   assert.equal(app.api.questionNumber, 1);
   assert.equal(app.timers.size, 0);
   app.api.answer(app.api.question.target);
-  assert.equal(app.element('next-question').hidden, true);
-  assert.equal(app.element('countdown-label').textContent, 'Next in 5s');
+  assert.equal(app.element('next-question').hidden, false);
+  assert.equal(app.element('next-question').disabled, true);
+  assert.equal(app.element('next-arrow').style.display, 'none');
+  assert.equal(app.element('countdown-label').hidden, false);
+  assert.equal(app.element('countdown-label').textContent, '5');
   app.advance(2000);
-  assert.equal(app.element('countdown-label').textContent, 'Next in 3s');
+  assert.equal(app.element('countdown-label').textContent, '3');
   app.api.answer(app.api.question.target);
   assert.equal(app.api.state.stats.total, 1);
   app.advance(2999);
@@ -41,7 +47,7 @@ test('countdown starts only after answering and advances exactly once', () => {
   app.advance(1);
   assert.equal(app.api.questionNumber, 2);
   assert.equal(app.api.question.answered, false);
-  assert.equal(app.element('next-countdown').hidden, true);
+  assert.equal(app.element('countdown-label').hidden, true);
   app.advance(30000);
   assert.equal(app.api.questionNumber, 2);
   assert.equal(app.timers.size, 0);
@@ -66,7 +72,7 @@ test('changing the delay restarts the timer without recording another answer', (
   app.api.answer(app.api.question.target);
   app.advance(4000);
   chooseDelay(app, 10);
-  assert.equal(app.element('countdown-label').textContent, 'Next in 10s');
+  assert.equal(app.element('countdown-label').textContent, '10');
   app.advance(9999);
   assert.equal(app.api.questionNumber, 1);
   app.advance(1);
@@ -84,7 +90,7 @@ test('language switching translates a live timer without restarting it', () => {
     target: { closest: () => ({ dataset: { language: 'pt-BR' } }) }
   });
   assert.equal(app.api.countdownDeadline, deadline);
-  assert.equal(app.element('countdown-label').textContent, 'Próxima em 3s');
+  assert.equal(app.element('countdown-label').textContent, '3');
   app.advance(3000);
   assert.equal(app.api.questionNumber, 2);
   assert.equal(app.api.state.stats.total, 1);

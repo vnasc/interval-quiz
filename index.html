@@ -141,6 +141,19 @@
               <span class="equation-arrow">→</span>
               <div class="answer-tile">
                 <strong id="target-note">?</strong>
+                <button
+                  id="next-question"
+                  class="next-button"
+                  aria-label="Next question"
+                  data-i18n-aria="next"
+                  hidden
+                  disabled
+                >
+                  <svg id="next-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <span id="countdown-label" class="next-countdown" aria-hidden="true" hidden></span>
+                </button>
               </div>
             </div>
 
@@ -159,20 +172,6 @@
                 aria-live="polite"
               ></div>
 
-              <button id="next-question" class="next-button" disabled>
-                <span data-i18n="next">Next question</span> <span>→</span>
-              </button>
-
-              <div
-                id="next-countdown"
-                class="next-countdown"
-                role="timer"
-                aria-live="off"
-                hidden
-              >
-                <span aria-hidden="true">◷</span
-                ><span id="countdown-label"></span>
-              </div>
             </div>
           </section>
 

@@ -123,14 +123,19 @@
   }
 
   function renderAdvance() {
-    $('next-question').hidden = state.autoNext;
+    const counting = state.autoNext && question.answered;
+    $('next-question').hidden = !question.answered;
     $('next-question').disabled = !question.answered || state.autoNext;
-    $('next-countdown').hidden = !state.autoNext || !question.answered;
+    $('next-arrow').style.display = counting ? 'none' : '';
+    $('countdown-label').hidden = !counting;
 
-    if (state.autoNext && question.answered) {
+    if (counting) {
       const remaining = countdownDeadline === null ? state.countdownSeconds : Math.max(0, Math.ceil((countdownDeadline - Date.now()) / 1000));
-      const label = t('nextIn', { count: remaining });
+      const label = String(remaining);
       if ($('countdown-label').textContent !== label) $('countdown-label').textContent = label;
+      $('next-question').setAttribute('aria-label', t('nextIn', { count: remaining }));
+    } else {
+      $('next-question').setAttribute('aria-label', t('next'));
     }
   }
 
